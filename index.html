@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <style>
+        body { margin: 0; background: #000; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        canvas { border: 1px solid #555; image-rendering: pixelated; width: 100%; max-width: 400px; height: auto; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+</head>
+<body>
+<script>
+const config = {
+    type: Phaser.AUTO,
+    width: 320, height: 240,
+    physics: { default: 'arcade', arcade: { gravity: { y: 30 } } },
+    scene: { preload, create, update }
+};
+const game = new Phaser.Game(config);
+let lander;
+
+function preload() { this.load.image('lander', 'https://labs.phaser.io/assets/sprites/thrustship.png'); }
+function create() {
+    lander = this.physics.add.sprite(160, 50, 'lander').setScale(0.5);
+    lander.setCollideWorldBounds(true);
+    let ground = this.add.rectangle(160, 238, 320, 5, 0x555555);
+    this.physics.add.existing(ground, true);
+    this.physics.add.collider(lander, ground, (l) => {
+        l.setPosition(160, 50); l.setVelocity(0, 0);
+    });
+}
+function update() { if (this.input.activePointer.isDown) lander.setVelocityY(-60); }
+</script>
+</body>
+</html>
